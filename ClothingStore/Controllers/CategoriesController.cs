@@ -30,48 +30,62 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("create-category")]
-        public async Task<IActionResult> CreateCategory(CreateCategoryDTO createCategoryDTO)
+        public async Task<IActionResult> CreateCategory( CreateCategoryDTO createCategoryDTO)
         {
-            try
+            if(ModelState.IsValid)
             {
-                var categoryCreate = await _categoryRepository.Create(createCategoryDTO);
-                if (categoryCreate != null)
+                try
                 {
-                    return Ok(categoryCreate);
+                    var categoryCreate = await _categoryRepository.Create(createCategoryDTO);
+                    if (categoryCreate != null)
+                    {
+                        return Ok(categoryCreate);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                else
+                catch
                 {
                     return BadRequest();
                 }
             }
-            catch
+            else
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
         }
 
-        [HttpPut("update-category")]
+        [HttpPut("update-category/{id}")]
         public async Task<IActionResult> UpdateCategory(CreateCategoryDTO createCategoryDTO, int id)
         {
-            try
+            if(ModelState.IsValid)
             {
-                var categoryUpdate = await _categoryRepository.Update(createCategoryDTO, id);
-                if (categoryUpdate != null)
+                try
                 {
-                    return Ok(categoryUpdate);
+                    var categoryUpdate = await _categoryRepository.Update(createCategoryDTO, id);
+                    if (categoryUpdate != null)
+                    {
+                        return Ok(categoryUpdate);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                else
+                catch
                 {
                     return BadRequest();
                 }
             }
-            catch
+            else
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
         }
 
-        [HttpDelete("delete-category")]
+        [HttpDelete("delete-category/{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try
