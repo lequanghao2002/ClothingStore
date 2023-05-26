@@ -9,6 +9,6 @@ namespace ClothingStore.Models.Domain
         public string? NameCategory { get; set; }
 
         // navigation properties: one product has many category
-        public Product? Product { get; set; }
+        public List<Product>? Product { get; set; }
     }
 }

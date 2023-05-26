@@ -11,7 +11,7 @@ namespace ClothingStore.Models.Domain
         public int Quantity { get; set; }
 
         //navigation properties: one order has many product
-        public List<Product>? Products { get; set; }
+        public Product? Products { get; set; }
 
         //navigation properties: one user has many order
         public User? User { get; set; }

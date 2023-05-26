@@ -10,6 +10,6 @@ namespace ClothingStore.Models.Domain
         public string? Image_url { get; set;}
 
         //navigation properties: one product has many image
-        public Product? Product { get; set; }
+        public List<Product>? Product { get; set; }
     }
 }

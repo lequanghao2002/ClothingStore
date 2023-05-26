@@ -11,25 +11,30 @@ namespace ClothingStore.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.Manage_Images)
-                .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ID_MI);
+                .HasOne(p => p.Manage_Images)
+                .WithMany(p => p.Product)
+                .HasForeignKey( p => p.ID_MI);
+
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.Categories)
-                .WithOne(p => p.Product)
+                .HasOne(p => p.Categories)
+                .WithMany(p => p.Product)
                 .HasForeignKey(p => p.ID_Category);
+
             modelBuilder.Entity<User>()
                .HasOne(u => u.Authorities)
                .WithMany(u => u.User)
                .HasForeignKey(u => u.ID_Authorize);
+
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.Products)
-                .WithOne(o => o.Order)
-                .HasForeignKey(o => o.ID_Product);
+                .HasOne(o => o.Products)
+                .WithMany(o => o.Order)
+                .HasForeignKey( o => o.ID_Product);
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany(o => o.Order)
                 .HasForeignKey(o => o.ID_User);
+
             modelBuilder.Entity<Order_Detail>()
                 .HasOne(od => od.Order)
                 .WithMany(od => od.Order_Details)
