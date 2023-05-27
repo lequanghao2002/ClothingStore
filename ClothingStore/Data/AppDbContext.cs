@@ -26,20 +26,19 @@ namespace ClothingStore.Data
                .HasForeignKey(u => u.ID_Authorize);
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Products)
-                .WithMany(o => o.Order)
-                .HasForeignKey( o => o.ID_Product);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.User)
+                .HasOne(o => o.user)
                 .WithMany(o => o.Order)
                 .HasForeignKey(o => o.ID_User);
 
             modelBuilder.Entity<Order_Detail>()
-                .HasOne(od => od.Order)
-                .WithMany(od => od.Order_Details)
-                .HasForeignKey(od => od.ID_Order);
+                .HasOne(o => o.Order)
+                .WithMany(o => o.Order_Details)
+                .HasForeignKey( o => o.ID_Order);
 
+            modelBuilder.Entity<Order_Detail>()
+                .HasOne(o => o.Product)
+                .WithMany(o => o.Order_Details)
+                .HasForeignKey(o => o.ID_Product);
         }
 
         public DbSet<Authorities>? Authorities { get; set; }

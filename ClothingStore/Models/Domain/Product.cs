@@ -21,6 +21,7 @@ namespace ClothingStore.Models.Domain
         public Category? Categories{ get; set; }
 
         //navigation properties: one order has many product
-        public List<Order>? Order { get; set; }
+        public List<Order_Detail>? Order_Details { get; set; }
+
     }
 }
