@@ -63,7 +63,7 @@ namespace ClothingStore.Repositories
 
         public async Task<ImageNoIdDTO> UpdateImage(int id, ImageNoIdDTO imageNoIdDTO)
         {
-            var ImageDomain = _context.Manage_Image?.FirstOrDefault(i => i.ID_MI == id);
+            var ImageDomain = _context.Manage_Image!.FirstOrDefault(i => i.ID_MI == id);
             if (ImageDomain != null)
             {
                 if (imageNoIdDTO.ImageName == null && imageNoIdDTO.Image_url != null)
