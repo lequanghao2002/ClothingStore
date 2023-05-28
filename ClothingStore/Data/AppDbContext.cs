@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using ClothingStore.Models.Domain;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace ClothingStore.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> contextOptions) : base(contextOptions) { } // constructor
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,31 +39,6 @@ namespace ClothingStore.Data
                 .HasOne(o => o.Product)
                 .WithMany(o => o.Order_Details)
                 .HasForeignKey(o => o.ID_Product);
-
-            // Tạo phân quyền admin và user
-            var adminRoleId = "1";
-            var userRoleId = "2";
-            base.OnModelCreating(modelBuilder);
-            var roles = new List<IdentityRole>
-            {
-                new IdentityRole
-                {
-                    Id = adminRoleId,
-                    ConcurrencyStamp = adminRoleId,
-                    Name = "Admin",
-                    NormalizedName = "Admin".ToUpper(),
-                },
-                new IdentityRole
-                 {
-                    Id = userRoleId,
-                    ConcurrencyStamp = userRoleId,
-                    Name = "User",
-                    NormalizedName = "User".ToUpper()
-                 }
-
-            };
-
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
         }
 
         public DbSet<Authorities>? Authorities { get; set; }

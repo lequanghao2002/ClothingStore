@@ -1,7 +1,6 @@
 ﻿using ClothingStore.Models.Categories;
 using ClothingStore.Models.Orders;
 using ClothingStore.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +8,6 @@ namespace ClothingStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
