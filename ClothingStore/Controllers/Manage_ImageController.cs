@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ClothingStore.Models.DTO;
 using ClothingStore.Models.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClothingStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class Manage_ImageController : ControllerBase
     {
         private readonly AppDbContext? _dbContext;
