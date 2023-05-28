@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ClothingStore.Models.DTO;
 using ClothingStore.Models.Domain;
+using ClothingStore.CustomActionFilter;
+using ClothingStore.Repositories;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ClothingStore.Controllers
 {
@@ -11,37 +14,90 @@ namespace ClothingStore.Controllers
     public class Manage_ImageController : ControllerBase
     {
         private readonly AppDbContext? _dbContext;
+        private readonly IManage_ImageRepository _imageRepository;
 
-        public Manage_ImageController (AppDbContext? dbContext)
+        public Manage_ImageController (AppDbContext? dbContext, IManage_ImageRepository imageRepository)
         {
             _dbContext = dbContext;
+            _imageRepository = imageRepository;
         }
 
-        [HttpPost("upload-image")]
+        [HttpGet ("Get-All-Image")]
+        public async Task<IActionResult> GetAllImage()
+        {
+            try
+            {
+                var AllImage = await _imageRepository.GetAllImage();
+                return Ok(AllImage);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("Upload-Image")]
+        [ValidateModel]
         public async Task<IActionResult> AddImage ([FromForm] AddImageDTO imageDTO)
         {
-            if (imageDTO.Image_url == null || imageDTO.Image_url.Length == 0)
+            try
             {
-                return BadRequest("Hình ảnh không tồn tại");
+                if (imageDTO.Image_url == null || imageDTO.Image_url.Length == 0)
+                {
+                    return BadRequest("Hình ảnh không tồn tại");
+                }
+                var ImageAdd = await _imageRepository.AddImage(imageDTO);
+                return Ok(ImageAdd);
+
             }
-            string image_url;
-            using (var memorystream =  new MemoryStream())
+            catch
             {
-                await imageDTO.Image_url.CopyToAsync(memorystream);
-                var imageBytes = memorystream.ToArray();    
-                image_url = Convert.ToBase64String(imageBytes);
+                return BadRequest("Tải ảnh không thành công");
             }
+           
+        }
 
-            var image = new Manage_Image
+        [HttpPut ("Update-Image-By-Id")]
+        [ValidateModel]
+        public async Task<IActionResult> UpdateImage(int id, [FromForm] ImageNoIdDTO imageNoIdDTO)
+        {
+            try
             {
-                ImageName = imageDTO.ImageName,
-                Image_url = image_url,
-            };
+                if (imageNoIdDTO.ImageName == null && imageNoIdDTO.Image_url == null)
+                {
+                    return Ok("Không có trường nào được cập nhật");
+                }    
+                var ImageUpdate = await _imageRepository.UpdateImage(id, imageNoIdDTO);
+                if (ImageUpdate != null)
+                {
+                    return Ok(ImageUpdate);
+                }
+                return BadRequest($"Không tìm thấy hình ảnh có id: {id}");
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
+        }
 
-            _dbContext.Manage_Image.Add(image);
-            _dbContext.SaveChanges();
-
-            return Ok("Hình ảnh tải lên thành công");
+        [HttpDelete("Delete-Image-By-Id")]
+        public async Task<IActionResult>? DeleteImage(int id)
+        {
+            try
+            {
+                var ImageDelete = await _imageRepository.DeleteImage(id);
+                if ( ImageDelete != null )
+                {
+                    return Ok(ImageDelete);
+                }
+                return BadRequest($"Không tìm thấy hình ảnh có id: {id}");
+            }
+            catch
+            {
+                return BadRequest() ;
+            }
+           
         }
     }
 }

@@ -60,7 +60,7 @@ namespace ClothingStore.Repositories
 
         public async Task<GetProductDTO> GetById(int id)
         {
-            var productById = await _appDbContext.Product.SingleOrDefaultAsync(m => m.ID_Product == id);
+            var productById = await _appDbContext.Product!.SingleOrDefaultAsync(m => m.ID_Product == id);
             var productDomain = new GetProductDTO
             {
                 ID_Product = productById.ID_Product,
@@ -76,7 +76,7 @@ namespace ClothingStore.Repositories
 
         public async Task<List<GetProductDTO>> GetByCategory(int id)
         {
-            var productDomain = await _appDbContext.Product
+            var productDomain = await _appDbContext.Product!
                 .Where(m => m.ID_Category == id)
                 .Select(product => new GetProductDTO
                 {
