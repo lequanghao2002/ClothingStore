@@ -1,7 +1,7 @@
 ﻿using ClothingStore.Models.Domain;
-using ClothingStore.Models.DTO.User;
+using ClothingStore.Models.Users;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Users
 {
     public interface IUserRepository
     {
@@ -11,13 +11,14 @@ namespace ClothingStore.Repositories
 
         Task<RegisterUserDTO> RegisterUser(RegisterUserDTO registerUserDTO);
 
+
         LoginUser LoginUser(LoginUser loginUser);
 
         Task<UpdateUserDTO> UpdateUser(string Account, string Password, UpdateUserDTO updateUserDTO);
 
         Task<AddAuthorizeUserDTO> AddAuthorizeUser(int id, AddAuthorizeUserDTO addAuthorizeUserDTO);
 
-        Task<User> DeleteUser (int id);
+        Task<User> DeleteUser(int id);
 
 
 

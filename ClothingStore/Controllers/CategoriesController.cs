@@ -1,5 +1,6 @@
 ﻿using ClothingStore.Models.Categories;
-using ClothingStore.Repositories;
+using ClothingStore.Repositories.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("get-all-category")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
         public async Task<IActionResult> GetAllCategory()
         {
             try
@@ -30,7 +32,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("create-category")]
-        public async Task<IActionResult> CreateCategory( CreateCategoryDTO createCategoryDTO)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> CreateCategory( [FromForm] CreateCategoryDTO createCategoryDTO)
         {
             if(ModelState.IsValid)
             {
@@ -58,7 +61,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPut("update-category/{id}")]
-        public async Task<IActionResult> UpdateCategory(CreateCategoryDTO createCategoryDTO, int id)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> UpdateCategory([FromForm]CreateCategoryDTO createCategoryDTO, int id)
         {
             if(ModelState.IsValid)
             {
@@ -71,7 +75,7 @@ namespace ClothingStore.Controllers
                     }
                     else
                     {
-                        return BadRequest();
+                        return BadRequest($"Không tìm thấy id: {id}");
                     }
                 }
                 catch
@@ -86,6 +90,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpDelete("delete-category/{id}")]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try
@@ -97,7 +102,7 @@ namespace ClothingStore.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest($"Không tìm thấy id: {id}");
                 }
             }
             catch

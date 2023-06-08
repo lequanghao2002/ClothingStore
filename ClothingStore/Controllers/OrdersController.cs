@@ -1,8 +1,10 @@
 ﻿using ClothingStore.Models.Categories;
 using ClothingStore.Models.Orders;
-using ClothingStore.Repositories;
+using ClothingStore.Repositories.Orders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClothingStore.Controllers
 {
@@ -18,6 +20,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("get-all-order")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
         public async Task<IActionResult> GetAllOrder()
         {
             try
@@ -32,11 +35,14 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("get-order-by-id/{id}")]
-        public async Task<IActionResult> GetOrderById(int id)
+        [AuthorizeRoles("Read", "Write", "Admin")]
+        public async Task<IActionResult> GetOrderById([Required]int id)
         {
             try
             {
                 var orderById = await _orderRepository.GetOrderById(id);
+                if (orderById == null)
+                    return BadRequest($"Không tìm thấy sản phẩm có id: {id}");
                 return Ok(orderById);
             }
             catch
@@ -46,7 +52,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("order")]
-        public async Task<IActionResult> Order(CreateOrderDTO createOrderDTO)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> Order([FromForm] CreateOrderDTO createOrderDTO)
         {
             if (ModelState.IsValid)
             {
@@ -74,7 +81,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> Cancel(int id)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> Cancel([Required]int id)
         {
             try
             {

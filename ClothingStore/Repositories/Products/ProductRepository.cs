@@ -4,7 +4,7 @@ using ClothingStore.Models.Products;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Products
 {
     public class ProductRepository : IProductRepository
     {
@@ -61,6 +61,10 @@ namespace ClothingStore.Repositories
         public async Task<GetProductDTO> GetById(int id)
         {
             var productById = await _appDbContext.Product!.SingleOrDefaultAsync(m => m.ID_Product == id);
+            if (productById == null)
+            {
+                return null!;
+            }
             var productDomain = new GetProductDTO
             {
                 ID_Product = productById.ID_Product,

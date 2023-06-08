@@ -1,7 +1,7 @@
 ﻿using ClothingStore.Models.Categories;
 using ClothingStore.Models.Domain;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Categories
 {
     public interface ICategoryRepository
     {

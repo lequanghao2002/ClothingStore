@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ClothingStore.Models.DTO
+namespace ClothingStore.Models.Authorize
 {
     public class CreateAuthorizeDTO
     {
-        [Required (ErrorMessage = "Vui lòng nhập quyền")]
+        [Required(ErrorMessage = "Vui lòng nhập quyền")]
         public string? Authorize { get; set; }
     }
 }

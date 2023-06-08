@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using ClothingStore.Models.Domain;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClothingStore.Data
 {

@@ -1,4 +1,4 @@
-﻿namespace ClothingStore.Models.DTO
+﻿namespace ClothingStore.Models.Authorize
 {
     public class AuthorizeDTO
     {

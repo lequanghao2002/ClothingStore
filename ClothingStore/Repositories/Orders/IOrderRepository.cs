@@ -2,7 +2,7 @@
 using ClothingStore.Models.OrderDetails;
 using ClothingStore.Models.Orders;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Orders
 {
     public interface IOrderRepository
     {

@@ -12,6 +12,6 @@ namespace ClothingStore.Models.Orders
         public DateTime DateOrder { get; set; }
         public int Status { get; set; }
 
-        public List<GetOrderDetailDTO> OrderDetailList { get; set; }
+        public List<GetOrderDetailDTO>? OrderDetailList { get; set; }
     }
 }

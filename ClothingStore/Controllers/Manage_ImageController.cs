@@ -1,11 +1,13 @@
 ﻿using ClothingStore.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ClothingStore.Models.DTO;
 using ClothingStore.Models.Domain;
 using ClothingStore.CustomActionFilter;
-using ClothingStore.Repositories;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ClothingStore.Models.Manage_Image;
+using System.ComponentModel.DataAnnotations;
+using ClothingStore.Repositories.Manage_Images;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClothingStore.Controllers
 {
@@ -23,6 +25,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet ("Get-All-Image")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
         public async Task<IActionResult> GetAllImage()
         {
             try
@@ -38,6 +41,7 @@ namespace ClothingStore.Controllers
 
         [HttpPost("Upload-Image")]
         [ValidateModel]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> AddImage ([FromForm] AddImageDTO imageDTO)
         {
             try
@@ -59,7 +63,8 @@ namespace ClothingStore.Controllers
 
         [HttpPut ("Update-Image-By-Id")]
         [ValidateModel]
-        public async Task<IActionResult> UpdateImage(int id, [FromForm] ImageNoIdDTO imageNoIdDTO)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> UpdateImage([Required]int id, [FromForm] ImageNoIdDTO imageNoIdDTO)
         {
             try
             {
@@ -82,7 +87,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpDelete("Delete-Image-By-Id")]
-        public async Task<IActionResult>? DeleteImage(int id)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult>? DeleteImage([Required]int id)
         {
             try
             {

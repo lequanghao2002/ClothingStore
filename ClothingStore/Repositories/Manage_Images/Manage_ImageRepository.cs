@@ -1,19 +1,19 @@
 ﻿using ClothingStore.Data;
 using Microsoft.EntityFrameworkCore;
 using ClothingStore.Models.Domain;
-using ClothingStore.Models.DTO;
 using Microsoft.Build.Framework;
 using System;
 using System.IO;
+using ClothingStore.Models.Manage_Image;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Manage_Images
 {
     public class Manage_ImageRepository : IManage_ImageRepository
     {
         private readonly AppDbContext? _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _contextAccessor;
-       
+
         public Manage_ImageRepository(AppDbContext? context, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor contextAccessor)
         {
             _context = context;
@@ -31,14 +31,14 @@ namespace ClothingStore.Repositories
                 ImageName = image.ImageName,
                 Image_url = image.Image_url
             }).ToListAsync();
-           
+
             return ImageList;
         }
 
         public async Task<AddImageDTO> AddImage(AddImageDTO imageDTO)
         {
             // Lưu trữ hình ảnh vào thư mục lưu trữ trên server
-            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath,"Images",imageDTO.Image_url.FileName);
+            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", imageDTO.Image_url.FileName);
             using (var stream = new FileStream(imagePath, FileMode.Create))
             {
                 imageDTO.Image_url.CopyTo(stream);
@@ -48,7 +48,7 @@ namespace ClothingStore.Repositories
             var request = _contextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host.Value}/";
             var imageUrl = $"{baseUrl}/Images/{imageDTO.Image_url.FileName}";
-           
+
             var image = new Manage_Image
             {
                 ImageName = imageDTO.ImageName,
@@ -81,7 +81,7 @@ namespace ClothingStore.Repositories
                     // Lưu trữ đường dẫn hình ảnh vào cơ sở dữ liệu
                     ImageDomain.Image_url = imageUrl;
                     await _context.SaveChangesAsync();
-                }    
+                }
                 else if (imageNoIdDTO.Image_url == null)
                 {
                     ImageDomain.ImageName = imageNoIdDTO.ImageName;
@@ -103,14 +103,14 @@ namespace ClothingStore.Repositories
                     ImageDomain.ImageName = imageNoIdDTO.ImageName;
                     ImageDomain.Image_url = imageUrl;
                     await _context.SaveChangesAsync();
-                }         
+                }
             }
             return imageNoIdDTO;
         }
 
-        public async Task<Manage_Image>? DeleteImage(int id )
+        public async Task<Manage_Image>? DeleteImage(int id)
         {
-            var ImageDomain = _context.Manage_Image!.SingleOrDefault( i => i.ID_MI == id); 
+            var ImageDomain = _context.Manage_Image!.SingleOrDefault(i => i.ID_MI == id);
             if (ImageDomain != null)
             {
                 _context.Manage_Image.Remove(ImageDomain);

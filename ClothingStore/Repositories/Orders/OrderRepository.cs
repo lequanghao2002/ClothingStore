@@ -5,7 +5,7 @@ using ClothingStore.Models.Orders;
 using ClothingStore.Models.Products;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Orders
 {
     public class OrderRepository : IOrderRepository
     {
@@ -17,7 +17,7 @@ namespace ClothingStore.Repositories
         }
         public async Task<List<GetOrderDTO>> GetAll()
         {
-            var orderDomainList = await _appDbContext.Order.Select(order => new GetOrderDTO
+            var orderDomainList = await _appDbContext.Order!.Select(order => new GetOrderDTO
             {
                 ID_Order = order.ID_Order,
                 ID_User = order.ID_User,
@@ -26,7 +26,7 @@ namespace ClothingStore.Repositories
                 PhoneNumber = order.PhoneNumber,
                 DateOrder = order.DateOrder,
                 Status = order.Status,
-                OrderDetailList = order.Order_Details.Select(orderDetail => new GetOrderDetailDTO
+                OrderDetailList = order.Order_Details!.Select(orderDetail => new GetOrderDetailDTO
                 {
                     ID_Order_Detail = orderDetail.ID_Order_Detail,
                     ID_Product = orderDetail.ID_Product,
@@ -41,8 +41,10 @@ namespace ClothingStore.Repositories
 
         public async Task<GetOrderDTO> GetOrderById(int id)
         {
-            var orderById = await _appDbContext.Order.SingleOrDefaultAsync(m => m.ID_Order == id);
-            var orderDetailById = _appDbContext.Order_Detail.Where(m => m.ID_Order == orderById.ID_Order);
+            var orderById = await _appDbContext.Order!.SingleOrDefaultAsync(m => m.ID_Order == id);
+            if (orderById == null)
+                return null!;
+            var orderDetailById = _appDbContext.Order_Detail!.Where(m => m.ID_Order == orderById.ID_Order);
             var orderDomain = new GetOrderDTO
             {
                 ID_Order = orderById.ID_Order,
@@ -85,7 +87,7 @@ namespace ClothingStore.Repositories
                 {
                     ID_Order = OrderDomain.ID_Order,
                     ID_Product = cart.ID_Product,
-                    Price = _appDbContext.Product.SingleOrDefault(m => m.ID_Product == cart.ID_Product).Price,
+                    Price = _appDbContext.Product!.SingleOrDefault(m => m.ID_Product == cart.ID_Product).Price,
                     Quantity = cart.Quantity
                 };
 
@@ -98,7 +100,7 @@ namespace ClothingStore.Repositories
 
         public async Task<bool> Cancel(int id)
         {
-            var orderDomain = await _appDbContext.Order.SingleOrDefaultAsync(m => m.ID_Order == id);
+            var orderDomain = await _appDbContext.Order!.SingleOrDefaultAsync(m => m.ID_Order == id);
             if (orderDomain != null)
             {
                 orderDomain.Status = 0;

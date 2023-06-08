@@ -1,7 +1,7 @@
 ﻿using ClothingStore.Models.Domain;
 using ClothingStore.Models.Products;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Products
 {
     public interface IProductRepository
     {

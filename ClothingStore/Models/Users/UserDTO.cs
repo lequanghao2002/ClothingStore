@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ClothingStore.Models.DTO.User
+namespace ClothingStore.Models.Users
 {
     public class UserDTO
     {

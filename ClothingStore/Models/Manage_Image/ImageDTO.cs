@@ -1,7 +1,7 @@
 ﻿using ClothingStore.Models.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace ClothingStore.Models.DTO
+namespace ClothingStore.Models.Manage_Image
 {
     public class ImageDTO
     {
@@ -12,9 +12,9 @@ namespace ClothingStore.Models.DTO
 
     public class ImageNoIdDTO
     {
-      
+
         public string? ImageName { get; set; }
-       
+
         public IFormFile? Image_url { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ClothingStore.Models.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace ClothingStore.Models.DTO
+namespace ClothingStore.Models.Manage_Image
 {
     public class AddImageDTO
     {

@@ -1,7 +1,7 @@
-﻿using ClothingStore.Models.Domain;
-using ClothingStore.Models.DTO;
+﻿using ClothingStore.Models.Authorize;
+using ClothingStore.Models.Domain;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Authorize
 {
     public interface IAuthoritiesRepository
     {
@@ -9,6 +9,6 @@ namespace ClothingStore.Repositories
         Task<CreateAuthorizeDTO> CreateAuthorize(CreateAuthorizeDTO createAuthorizeDTO);
         Task<AuthorizeNoIdDTO> UpdateAuthorize(int id, AuthorizeNoIdDTO authorizeNoIdDTO);
 
-        Task<Authorities> DeleteAuthorize (int id); 
+        Task<Authorities> DeleteAuthorize(int id);
     }
 }

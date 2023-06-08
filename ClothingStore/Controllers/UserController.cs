@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ClothingStore.Repositories;
-using ClothingStore.Models.DTO.User;
 using ClothingStore.CustomActionFilter;
 using Microsoft.Build.Framework;
+using ClothingStore.Models.Users;
+using ClothingStore.Repositories.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClothingStore.Controllers
 {
@@ -23,6 +24,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("Get-All-User")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
         public async Task<IActionResult> GetAllUser()
         {
             try
@@ -37,6 +39,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("Get-User-By-Account-Password")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
+
         public async Task<IActionResult> GetUserAccountPassword([System.ComponentModel.DataAnnotations.Required] string account, [System.ComponentModel.DataAnnotations.Required] string password)
         {
             try
@@ -54,6 +58,7 @@ namespace ClothingStore.Controllers
 
         [HttpPost("Register-User")]
         [ValidateModel]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> RegisterUser([FromForm] RegisterUserDTO RegisterUserDTO)
         {
             try
@@ -63,7 +68,7 @@ namespace ClothingStore.Controllers
                 {
                     return Ok(RegisterUser);
                 }
-                else return BadRequest("Đăng kí không thành công");
+                else return BadRequest($"{RegisterUserDTO.Account} đã tồn tại");
             }
             catch
             {
@@ -72,7 +77,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("Login-User")]
-        public  IActionResult LoginUser([FromForm]LoginUser loginUser)
+        [AuthorizeRoles("Write", "Admin")]
+        public IActionResult LoginUser([FromForm]LoginUser loginUser)
         {
             try
             {
@@ -81,7 +87,7 @@ namespace ClothingStore.Controllers
                 {
                     return Ok("Đăng nhập thành công");
                 }
-                else return BadRequest("Đăng nhập không thành công");
+                else return BadRequest("Sai tên tài khoản hoặc mật khẩu");
             }
             catch
             {
@@ -90,6 +96,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPut("Update-User")]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> UpdateUser([System.ComponentModel.DataAnnotations.Required] string Account, [System.ComponentModel.DataAnnotations.Required] string Password,  [FromBody]UpdateUserDTO updateUserDTO)
         {
             try
@@ -108,6 +115,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("Add-Authorize")]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> AddAuthorize([System.ComponentModel.DataAnnotations.Required] int id, [FromForm] AddAuthorizeUserDTO addAuthorizeUserDTO)
         {
             try
@@ -124,6 +132,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpDelete("Delete-Authorize")]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> DeleteUser ([System.ComponentModel.DataAnnotations.Required] int id)
         {
             try

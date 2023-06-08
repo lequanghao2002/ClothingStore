@@ -1,7 +1,9 @@
 ﻿using ClothingStore.Models.Products;
-using ClothingStore.Repositories;
+using ClothingStore.Repositories.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClothingStore.Controllers
 {
@@ -16,6 +18,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("get-all-product")]
+        [AuthorizeRoles("Read", "Write", "Admin")]
         public async Task<IActionResult> GetAllProduct(string? filter, string? sortBy, bool isAcending = true, int page = 1, int pageSize = 10) 
         {
             try
@@ -31,22 +34,26 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("get-product-by-id/{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        [AuthorizeRoles("Read", "Write", "Admin")]
+        public async Task<IActionResult> GetProductById([Required] int id)
         {
             try
             {
                 var productById = await _productRepository.GetById(id);
+                if (productById == null)
+                    return BadRequest($"Không tìm thấy sản phẩm có id = {id}");
                 return Ok(productById);
             }
             catch
             {
-                return BadRequest($"Không tìm thấy sản phẩm có id = {id}");
+                return BadRequest();
             }
 
         }
 
         [HttpGet("get-product-by-category/{id}")]
-        public async Task<IActionResult> GetProductByCategory(int id)
+        [AuthorizeRoles("Read", "Write", "Admin")]
+        public async Task<IActionResult> GetProductByCategory([Required] int id)
         {
             try
             {
@@ -61,7 +68,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPost("create-product")]
-        public async Task<IActionResult> CreateProduct(CreateProductDTO createProductDTO)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> CreateProduct([FromForm]CreateProductDTO createProductDTO)
         {
             if(ModelState.IsValid)
             {
@@ -89,7 +97,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPut("update-product/{id}")]
-        public async Task<IActionResult> UpdateProduct(CreateProductDTO createProductDTO, int id)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> UpdateProduct([FromForm]CreateProductDTO createProductDTO, [Required]int id)
         {
             if (ModelState.IsValid)
             {
@@ -117,7 +126,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpDelete("delete-product/{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        [AuthorizeRoles("Write", "Admin")]
+        public async Task<IActionResult> DeleteProduct([Required] int id)
         {
             if (ModelState.IsValid)
             {

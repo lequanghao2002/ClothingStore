@@ -3,18 +3,20 @@ using ClothingStore.Models.Categories;
 using ClothingStore.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Categories
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly AppDbContext _appDbContext;
 
-        public CategoryRepository(AppDbContext appDbContext) {
+        public CategoryRepository(AppDbContext appDbContext)
+        {
             _appDbContext = appDbContext;
         }
         public async Task<List<GetCategoryDTO>> GetAll()
         {
-            var categoryDomainList = await _appDbContext.Category!.Select(category => new GetCategoryDTO{
+            var categoryDomainList = await _appDbContext.Category!.Select(category => new GetCategoryDTO
+            {
                 ID_Category = category.ID_Category,
                 NameCategory = category.NameCategory,
             }).ToListAsync();
@@ -53,7 +55,7 @@ namespace ClothingStore.Repositories
         {
             var categoryDomain = _appDbContext.Category!.SingleOrDefault(m => m.ID_Category == id);
 
-            if(categoryDomain != null)
+            if (categoryDomain != null)
             {
                 _appDbContext.Remove(categoryDomain);
                 await _appDbContext.SaveChangesAsync();
@@ -64,6 +66,6 @@ namespace ClothingStore.Repositories
             }
             return categoryDomain!;
         }
-        
+
     }
 }

@@ -1,7 +1,8 @@
 ﻿using ClothingStore.CustomActionFilter;
 using ClothingStore.Data;
-using ClothingStore.Models.DTO;
-using ClothingStore.Repositories;
+using ClothingStore.Models.Authorize;
+using ClothingStore.Repositories.Authorize;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,8 @@ namespace ClothingStore.Controllers
         }
 
         [HttpGet("Get-All-Authorize")]
+        [AuthorizeRoles("Read", "Write", "Admin")]    
+        
         public async Task<IActionResult> GetAllAuthorize()
         {
             try
@@ -33,6 +36,7 @@ namespace ClothingStore.Controllers
             }
         }
         [HttpPost("Create-Authorize")]
+        [AuthorizeRoles("Write", "Admin")]
         [ValidateModel]
         public async Task<IActionResult> CreateAuthorize([FromForm] CreateAuthorizeDTO createAuthorizeDTO)
         {
@@ -48,16 +52,15 @@ namespace ClothingStore.Controllers
         }
 
         [HttpPut]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> UpdateAuthorize(int id, [FromForm] AuthorizeNoIdDTO authorizeNoIdDTO)
         {
             try
             {
-                if (authorizeNoIdDTO.Authorize == null)
-                {
-                    return Ok("Authorize không thay đổi");
-                }
                 var AuthorizeUpdate = await _authoritiesRepository.UpdateAuthorize(id, authorizeNoIdDTO);
-                return Ok(AuthorizeUpdate);
+                if (AuthorizeUpdate != null)
+                    return Ok(AuthorizeUpdate);
+                return BadRequest($"Không tìm thấy id: {id}");
             }
             catch
             {
@@ -66,6 +69,7 @@ namespace ClothingStore.Controllers
         }
 
         [HttpDelete]
+        [AuthorizeRoles("Write", "Admin")]
         public async Task<IActionResult> DeleteAuthorize (int id)
         {
             try

@@ -1,9 +1,9 @@
 ﻿using ClothingStore.Data;
+using ClothingStore.Models.Authorize;
 using ClothingStore.Models.Domain;
-using ClothingStore.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClothingStore.Repositories
+namespace ClothingStore.Repositories.Authorize
 {
     public class AuthorizeRepository : IAuthoritiesRepository
     {
@@ -41,8 +41,10 @@ namespace ClothingStore.Repositories
             {
                 AuthorizeDomain.Authorize = authorizeNoIdDTO.Authorize;
                 await _appDbContext.SaveChangesAsync();
+                return authorizeNoIdDTO;
             }
-            return authorizeNoIdDTO;
+            return null!;
+
         }
 
         public async Task<Authorities> DeleteAuthorize(int id)
