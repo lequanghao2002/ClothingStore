@@ -20,7 +20,7 @@ namespace ClothingStore.Controllers
 
         [HttpGet("get-all-product")]
         [AuthorizeRoles("Read", "Write", "Admin")]
-        public async Task<IActionResult> GetAllProduct(string? filter, string? sortBy, bool isAcending = true, int page = 1, int pageSize = 10) 
+        public async Task<IActionResult> GetAllProduct(string? filter, string? sortBy, bool isAcending = true, int page = 0, int pageSize = 6) 
         {
             try
             {
@@ -36,7 +36,7 @@ namespace ClothingStore.Controllers
 
         [HttpGet("get-product-by-id/{id}")]
         [AuthorizeRoles("Read", "Write", "Admin")]
-        public async Task<IActionResult> GetProductById([Required] int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace ClothingStore.Controllers
 
         [HttpPost("create-product")]
         [AuthorizeRoles("Write", "Admin")]
-        public async Task<IActionResult> CreateProduct([FromForm]CreateProductDTO createProductDTO)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductDTO createProductDTO)
         {
             if(ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace ClothingStore.Controllers
 
         [HttpPut("update-product/{id}")]
         [AuthorizeRoles("Write", "Admin")]
-        public async Task<IActionResult> UpdateProduct([FromForm]CreateProductDTO createProductDTO, [Required]int id)
+        public async Task<IActionResult> UpdateProduct(CreateProductDTO createProductDTO, int id)
         {
             if (ModelState.IsValid)
             {

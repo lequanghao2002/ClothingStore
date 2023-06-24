@@ -15,7 +15,7 @@ namespace ClothingStore.Models.Products
 
         [Range(0, 100, ErrorMessage = "Giảm giá phải nằm trong khoảng 0% đến 100%")]
         public float Discount { get; set; }
-        public int ID_MI { get; set; }
+        public string Image_Url { get; set; }
 
         [Required]
         public int ID_Category { get; set; }

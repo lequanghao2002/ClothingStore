@@ -87,7 +87,7 @@ namespace ClothingStore.Controllers
 
         // Login to the system
         [HttpPost("Login-to-the-System")]
-        public async Task<IActionResult> Login([FromForm] LoginRequestDTO loginRequestDTO)
+        public async Task<IActionResult> Login(LoginRequestDTO loginRequestDTO)
         {
             try
             {
@@ -101,11 +101,11 @@ namespace ClothingStore.Controllers
                         if (role != null)
                         {
                             var jwtToken =  _tokenRepository.CreateJWTToken(user, role.SingleOrDefault()!);
-                            var response = new LoginResponseDTO
-                            {
-                                JwtToken = jwtToken
-                            };
-                            return Ok(response);
+                            //var response = new LoginResponseDTO
+                            //{
+                            //    JwtToken = jwtToken
+                            //};
+                            return Ok(jwtToken);
                         }
                     }
                 }

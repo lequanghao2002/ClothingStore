@@ -1,4 +1,5 @@
-﻿using ClothingStore.Data;
+﻿using Blogger_Web.Infrastructure.Core;
+using ClothingStore.Data;
 using ClothingStore.Models.Domain;
 using ClothingStore.Models.Products;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace ClothingStore.Repositories.Products
             _appDbContext = appDbContext;
         }
 
-        public async Task<List<GetProductDTO>> GetAll(string? filter, string? sortBy, bool isAcending = true, int page = 1, int pageSize = 10)
+        public async Task<PaginationSet<GetProductDTO>> GetAll(string? filter, string? sortBy, bool isAcending = true, int page = 0, int pageSize = 6)
         {
             var allProductDomain = _appDbContext.Product.AsQueryable();
 
@@ -42,8 +43,6 @@ namespace ClothingStore.Repositories.Products
                 }
             }
 
-            allProductDomain = allProductDomain.Skip((page - 1) * pageSize).Take(pageSize);
-
             var productDomainList = await allProductDomain.Select(product => new GetProductDTO
             {
                 ID_Product = product.ID_Product,
@@ -53,19 +52,27 @@ namespace ClothingStore.Repositories.Products
                 Discount = product.Discount,
                 ID_Category = product.ID_Category,
                 ID_MI = product.ID_MI,
-            }).ToListAsync();
+                Image_Url = product.Manage_Images.Image_url,
+                Category_Name = product.Categories.NameCategory
+            }).OrderByDescending(p => p.ID_Product).ToListAsync();
 
-            return productDomainList;
+            var totalCount = productDomainList.Count();
+            var listProductPagination = productDomainList.Skip(page * pageSize).Take(pageSize);
+
+            PaginationSet<GetProductDTO> paginationSet = new PaginationSet<GetProductDTO>()
+            {
+                List = listProductPagination,
+                Page = page,
+                TotalCount = totalCount,
+                PagesCount = (int)Math.Ceiling((decimal)totalCount / pageSize),
+            };
+
+            return paginationSet;
         }
 
         public async Task<GetProductDTO> GetById(int id)
         {
-            var productById = await _appDbContext.Product!.SingleOrDefaultAsync(m => m.ID_Product == id);
-            if (productById == null)
-            {
-                return null!;
-            }
-            var productDomain = new GetProductDTO
+            var productById = await _appDbContext.Product.Select(productById => new GetProductDTO
             {
                 ID_Product = productById.ID_Product,
                 NameProduct = productById.NameProduct,
@@ -74,8 +81,11 @@ namespace ClothingStore.Repositories.Products
                 Discount = productById.Discount,
                 ID_Category = productById.ID_Category,
                 ID_MI = productById.ID_MI,
-            };
-            return productDomain;
+                Image_Url = productById.Manage_Images.Image_url,
+                Category_Name = productById.Categories.NameCategory
+            }).FirstOrDefaultAsync(p => p.ID_Product == id);
+            
+            return productById;
         }
 
         public async Task<List<GetProductDTO>> GetByCategory(int id)
@@ -98,6 +108,14 @@ namespace ClothingStore.Repositories.Products
 
         public async Task<CreateProductDTO> Create(CreateProductDTO createProductDTO)
         {
+            var imageDomain = new Manage_Image
+            {
+                Image_url = createProductDTO.Image_Url
+            };
+            
+            await _appDbContext.Manage_Image.AddAsync(imageDomain);
+            await _appDbContext.SaveChangesAsync();
+
             var productDomain = new Product
             {
                 NameProduct = createProductDTO.NameProduct,
@@ -105,7 +123,7 @@ namespace ClothingStore.Repositories.Products
                 Price = createProductDTO.Price,
                 Discount = createProductDTO.Discount,
                 ID_Category = createProductDTO.ID_Category,
-                ID_MI = createProductDTO.ID_MI,
+                ID_MI = imageDomain.ID_MI,
             };
             await _appDbContext.AddAsync(productDomain);
             await _appDbContext.SaveChangesAsync();
@@ -117,20 +135,52 @@ namespace ClothingStore.Repositories.Products
         {
             var productDomain = _appDbContext.Product!.SingleOrDefault(m => m.ID_Product == id);
 
-            if (productDomain != null)
-            {
-                productDomain.NameProduct = createProductDTO.NameProduct;
-                productDomain.ProductDetail = createProductDTO.ProductDetail;
-                productDomain.Price = createProductDTO.Price;
-                productDomain.Discount = createProductDTO.Discount;
-                productDomain.ID_Category = createProductDTO.ID_Category;
-                productDomain.ID_MI = createProductDTO.ID_MI;
+            var image = await _appDbContext.Manage_Image.FirstOrDefaultAsync(i => i.Image_url == createProductDTO.Image_Url);
 
-                await _appDbContext.SaveChangesAsync();
+            if(image != null)
+            {
+                if (productDomain != null)
+                {
+                    productDomain.NameProduct = createProductDTO.NameProduct;
+                    productDomain.ProductDetail = createProductDTO.ProductDetail;
+                    productDomain.Price = createProductDTO.Price;
+                    productDomain.Discount = createProductDTO.Discount;
+                    productDomain.ID_Category = createProductDTO.ID_Category;
+                    productDomain.ID_MI = image.ID_MI;
+
+                    await _appDbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    return null!;
+                }
+
             }
             else
             {
-                return null!;
+                var imageDomain = new Manage_Image
+                {
+                    Image_url = createProductDTO.Image_Url
+                };
+
+                await _appDbContext.Manage_Image.AddAsync(imageDomain);
+                await _appDbContext.SaveChangesAsync();
+
+                if (productDomain != null)
+                {
+                    productDomain.NameProduct = createProductDTO.NameProduct;
+                    productDomain.ProductDetail = createProductDTO.ProductDetail;
+                    productDomain.Price = createProductDTO.Price;
+                    productDomain.Discount = createProductDTO.Discount;
+                    productDomain.ID_Category = createProductDTO.ID_Category;
+                    productDomain.ID_MI = imageDomain.ID_MI;
+
+                    await _appDbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    return null!;
+                }
             }
 
             return createProductDTO;

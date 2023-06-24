@@ -10,6 +10,8 @@ namespace ClothingStore.Models.Products
         public float Price { get; set; }
         public float Discount { get; set; } = 0;
         public int ID_MI { get; set; }
+        public string? Image_Url { get; set; }
         public int ID_Category { get; set; }
+        public string? Category_Name { get; set; }
     }
 }

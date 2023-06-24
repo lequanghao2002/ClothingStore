@@ -1,11 +1,12 @@
-﻿using ClothingStore.Models.Domain;
+﻿using Blogger_Web.Infrastructure.Core;
+using ClothingStore.Models.Domain;
 using ClothingStore.Models.Products;
 
 namespace ClothingStore.Repositories.Products
 {
     public interface IProductRepository
     {
-        public Task<List<GetProductDTO>> GetAll(string? filter, string? sortBy, bool isAcending = true, int page = 1, int pageSize = 10);
+        public Task<PaginationSet<GetProductDTO>> GetAll(string? filter, string? sortBy, bool isAcending = true, int page = 0, int pageSize = 6);
         public Task<GetProductDTO> GetById(int id);
         public Task<List<GetProductDTO>> GetByCategory(int id);
         public Task<CreateProductDTO> Create(CreateProductDTO createProductDTO);
