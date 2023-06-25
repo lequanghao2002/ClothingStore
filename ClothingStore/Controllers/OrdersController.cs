@@ -54,7 +54,7 @@ namespace ClothingStore.Controllers
 
         [HttpPost("order")]
         [AuthorizeRoles("Write", "Admin")]
-        public async Task<IActionResult> Order([FromForm] CreateOrderDTO createOrderDTO)
+        public async Task<IActionResult> Order(CreateOrderDTO createOrderDTO)
         {
             if (ModelState.IsValid)
             {

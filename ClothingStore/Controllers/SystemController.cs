@@ -87,7 +87,7 @@ namespace ClothingStore.Controllers
 
         // Login to the system
         [HttpPost("Login-to-the-System")]
-        public async Task<IActionResult> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             try
             {
